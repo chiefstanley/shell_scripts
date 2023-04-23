@@ -1,0 +1,50 @@
+Example of a shorter regex:
+
+```
+awk 'match($0, /[0-9]{1,3}(\.[0-9]{1,3}){3}/) {print substr($0, RSTART, RLENGTH)}'
+```
+
+This regular expression matches a sequence of one to three digits (`[0-9]{1,3}`) followed by three occurrences of a dot (`\.`) and another sequence of one to three digits. This matches the pattern of IPv4 addresses in dotted decimal notation.
+
+Here's how the command works:
+
+1. `match($0, /[0-9]{1,3}(\.[0-9]{1,3}){3}/)`: This function matches the regular expression `/[0-9]{1,3}(\.[0-9]{1,3}){3}/` against the entire line (`$0`) and saves the starting position and length of the match in the built-in `RSTART` and `RLENGTH` variables.
+
+2. `{print substr($0, RSTART, RLENGTH)}`: If a match is found, this command extracts the substring that matches the regular expression using the `substr` function and prints it to the output.
+
+By using this shorter regular expression with the `match` function, we can extract the IPv4 address from the input line.
+
+So, to use this command with the input line `SENT (0.0153s) Starting TCP Handshake > www.google.com:443 (142.251.41.36:443)`, you can pipe the input line to the `awk` command like this:
+
+```
+echo 'SENT (0.0153s) Starting TCP Handshake > www.google.com:443 (142.251.41.36:443)' | awk 'match($0, /[0-9]{1,3}(\.[0-9]{1,3}){3}/) {print substr($0, RSTART, RLENGTH)}'
+```
+
+This command should output the IPv4 address `142.251.41.36`.
+
+
+-------------------------------------------------------------------------------
+
+The `grep` command is a tool in Unix-like operating systems used to search for patterns in text files. Here's how the command you provided works:
+
+`-o` option: This option tells `grep` to only output the matching part of the line, not the entire line.
+
+`-P` option: This option tells `grep` to use Perl-compatible regular expressions (PCRE) for pattern matching.
+
+The pattern to be matched is `"SENT.*\(\K[\d.]+(?=:443)")`. Let's break it down:
+
+`SENT`: This matches the literal string "SENT".
+
+`.*`: This matches any character zero or more times.
+
+`\(`: This matches the literal character "(".
+
+`\K`: This is a special PCRE escape sequence that resets the start of the match. In this case, it means that everything matched so far will be ignored in the output.
+
+`[\d.]+`: This matches one or more digits or "." characters.
+
+`(?=:443)`: This is a positive lookahead assertion that matches the previous pattern only if it is followed by the string ":443".
+
+So, the pattern is looking for a string that starts with "SENT", followed by any characters, then a "(" character, and then one or more digits or "." characters, but only if they are followed by ":443". The output will be just the matching digits and "." characters.
+
+Therefore, this command will search for the specified pattern in a text file and output only the digits and "." characters that match the pattern and are followed by ":443".
