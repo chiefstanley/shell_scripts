@@ -25,6 +25,8 @@ do
 
   # Retrieve IP address, target, and successful connection information
   ip_address=$(echo "$nping_output" | grep -oP "SENT.*\(\K[\d.]+(?=:443)")
+  # Alternative AWK version
+  # ip_address=$(echo "$nping_output" | awk 'match($0, /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/) {print substr($0, RSTART, RLENGTH)}')
 
   # target=$(echo "$nping_output" | grep -oP "SENT .* > \K[\w.]+")
   successful_connections=$(echo "$nping_output" | grep -oP "Successful connections: \K[\d]+")
